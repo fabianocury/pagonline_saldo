@@ -15,6 +15,12 @@ public class Saldo {
     @Column(nullable=false)
     private BigDecimal saldo_congelado;
 
+    public Saldo(Long id_cliente, BigDecimal saldo_efetivo, BigDecimal saldo_congelado) {
+        this.id_cliente = id_cliente;
+        this.saldo_efetivo = saldo_efetivo;
+        this.saldo_congelado = saldo_congelado;
+    }
+
     public Long getId_cliente() {
         return id_cliente;
     }

@@ -18,11 +18,7 @@ public class SaldoController {
 
     @PostMapping
     ResponseEntity solicitaDeposito(@RequestBody SaldoDTO saldoDto) {
-        Saldo saldo = new Saldo();
-        saldo.setId_cliente(saldoDto.getIdCliente().get());
-        saldo.setSaldo_efetivo(saldoDto.getValor().get());
-        saldo.setSaldo_congelado(BigDecimal.ZERO);
-
+        Saldo saldo = new Saldo(saldoDto.getIdCliente().get(),saldoDto.getValor().get(), BigDecimal.ZERO );
         saldoRepository.save(saldo);
         return new ResponseEntity(HttpStatus.OK);
     }
