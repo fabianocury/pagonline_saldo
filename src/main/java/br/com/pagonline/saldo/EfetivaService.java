@@ -45,16 +45,23 @@ public class EfetivaService {
             saldoRepository.save(new Saldo(idClienteCredito, saldoCredito.getSaldo_efetivo().add(event.getValor()) ,saldoCredito.getSaldo_congelado()));
         }
 
-        Cliente clienteCredito = clientesPagamento.getCliente(idClienteCredito);
-        Cliente clienteDebito = clientesPagamento.getCliente(idClienteDebito);
+        try {
 
-        System.out.println("clienteCredito = " + clienteCredito);
-        System.out.println("clienteDebito = " + clienteDebito);
+            Cliente clienteDebito = clientesPagamento.getCliente(idClienteDebito);
+            Cliente clienteCredito = clientesPagamento.getCliente(idClienteCredito);
+            System.out.println("clienteCredito = " + clienteCredito);
+            System.out.println("clienteDebito = " + clienteDebito);
+        } catch (Exception e) {
+            System.out.println("e.getMessage() = " + e.getMessage());
+        }
 
 
-        RestTemplateBuilder restTemplateBuilder = restTemplateConfig.restTemplateBuilder();
-        List<Object> respostaCredito = restTemplateBuilder.build().getForObject(clienteCredito.getUrl().get(0), List.class);
-        List<Object> respostaDebito = restTemplateBuilder.build().getForObject(clienteDebito.getUrl().get(0), List.class);
+
+
+
+        //RestTemplateBuilder restTemplateBuilder = restTemplateConfig.restTemplateBuilder();
+        //List<Object> respostaCredito = restTemplateBuilder.build().getForObject(clienteCredito.getUrl().get(0), List.class);
+        //List<Object> respostaDebito = restTemplateBuilder.build().getForObject(clienteDebito.getUrl().get(0), List.class);
 
 
 //        notificaPagamento

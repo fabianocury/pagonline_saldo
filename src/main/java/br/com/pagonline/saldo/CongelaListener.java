@@ -31,23 +31,23 @@ public class CongelaListener{
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class CongelaTransacaoEvent {
 
-        private String idCliente;
+        private String idClienteDebito;
         private BigDecimal valor;
 
         @Override
         public String toString() {
-            return "EfetivaTransacaoEvent{" +
-                    "idClienteCredito='" + idCliente + '\'' +
+            return "CongelaTransacaoEvent{" +
+                    "idClienteDebito='" + idClienteDebito + '\'' +
                     ", valor=" + valor +
                     '}';
         }
 
-        public String getIdCliente() {
-            return idCliente;
+        public String getIdClienteDebito() {
+            return idClienteDebito;
         }
 
-        public void setIdCliente(String idClienteCredito) {
-            this.idCliente = idClienteCredito;
+        public void setIdClienteDebito(String idClienteDebito) {
+            this.idClienteDebito = idClienteDebito;
         }
 
 

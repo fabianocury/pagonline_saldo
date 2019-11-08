@@ -4,9 +4,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.math.BigDecimal;
 
-@FeignClient(name = "clientes")
+@FeignClient(name = "clientes", fallback = ClientesFallBack.class)
 public interface ClientesPagamento {
 
     @GetMapping("/clientes/{id}")

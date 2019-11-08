@@ -16,12 +16,12 @@ public class CongelaService {
         System.out.println("event = " + event);
 
         // Cliente Debito
-        Saldo saldo = saldoRepository.findById(Long.valueOf(event.getIdCliente())).orElse(null);
+        Saldo saldo = saldoRepository.findById(Long.valueOf(event.getIdClienteDebito())).orElse(null);
 
         if (saldo == null) {
-            saldoRepository.save(new Saldo(Long.valueOf(event.getIdCliente()), BigDecimal.ZERO, event.getValor()));
+            saldoRepository.save(new Saldo(Long.valueOf(event.getIdClienteDebito()), BigDecimal.ZERO, event.getValor()));
         } else {
-            saldoRepository.save(new Saldo(Long.valueOf(event.getIdCliente()), saldo.getSaldo_efetivo() ,saldo.getSaldo_congelado().add(event.getValor())));
+            saldoRepository.save(new Saldo(Long.valueOf(event.getIdClienteDebito()), saldo.getSaldo_efetivo() ,saldo.getSaldo_congelado().add(event.getValor())));
 
         }
     }
