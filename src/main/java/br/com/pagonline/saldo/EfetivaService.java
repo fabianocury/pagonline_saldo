@@ -2,9 +2,11 @@ package br.com.pagonline.saldo;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class EfetivaService {
@@ -12,32 +14,50 @@ public class EfetivaService {
     @Autowired
     private SaldoRepository saldoRepository;
 
+    @Autowired
+    private NotificaPagamento notificaPagamento;
+
+    @Autowired
+    private ClientesPagamento clientesPagamento;
+
+    @Autowired
+    private RestTemplateConfig restTemplateConfig;
+
     public void efetiva(EfetivaListener.EfetivaTransacaoEvent event) {
         System.out.println("event = " + event);
 
         // Cliente Debito
-        Saldo saldoDebito = saldoRepository.findById(Long.valueOf(event.getIdClienteDebito())).orElse(null);
-        Saldo saldoCredito = saldoRepository.findById(Long.valueOf(event.getIdClienteCredito())).orElse(null);
+        Long idClienteDebito = Long.valueOf(event.getIdClienteDebito());
+        Saldo saldoDebito = saldoRepository.findById(idClienteDebito).orElse(null);
+        Long idClienteCredito = Long.valueOf(event.getIdClienteCredito());
+        Saldo saldoCredito = saldoRepository.findById(idClienteCredito).orElse(null);
 
         if (saldoDebito == null) {
-            saldoRepository.save(new Saldo(Long.valueOf(event.getIdClienteDebito()), event.getValor().multiply(new BigDecimal(-1)) ,BigDecimal.ZERO));
+            saldoRepository.save(new Saldo(idClienteDebito, event.getValor().multiply(new BigDecimal(-1)) ,BigDecimal.ZERO));
         } else {
-            saldoRepository.save(new Saldo(Long.valueOf(event.getIdClienteDebito()), saldoDebito.getSaldo_efetivo().subtract(event.getValor()) ,BigDecimal.ZERO));
+            saldoRepository.save(new Saldo(idClienteDebito, saldoDebito.getSaldo_efetivo().subtract(event.getValor()) ,saldoDebito.getSaldo_congelado()));
 
         }
 
         if (saldoCredito == null) {
-            saldoRepository.save(new Saldo(Long.valueOf(event.getIdClienteCredito()), event.getValor() ,BigDecimal.ZERO));
+            saldoRepository.save(new Saldo(idClienteCredito, event.getValor() ,BigDecimal.ZERO));
         } else {
-            saldoRepository.save(new Saldo(Long.valueOf(event.getIdClienteCredito()), saldoDebito.getSaldo_efetivo().add(event.getValor()) ,BigDecimal.ZERO));
+            saldoRepository.save(new Saldo(idClienteCredito, saldoCredito.getSaldo_efetivo().add(event.getValor()) ,saldoCredito.getSaldo_congelado()));
         }
 
-        //System.out.println("saldo.getId_cliente() = " + saldo.getId_cliente());
-        //saldoRepository.save();
+        Cliente clienteCredito = clientesPagamento.getCliente(idClienteCredito);
+        Cliente clienteDebito = clientesPagamento.getCliente(idClienteDebito);
 
-        //Cliente Credito
+        System.out.println("clienteCredito = " + clienteCredito);
+        System.out.println("clienteDebito = " + clienteDebito);
 
-        //saldoRepository.save()
+
+        RestTemplateBuilder restTemplateBuilder = restTemplateConfig.restTemplateBuilder();
+        List<Object> respostaCredito = restTemplateBuilder.build().getForObject(clienteCredito.getUrl().get(0), List.class);
+        List<Object> respostaDebito = restTemplateBuilder.build().getForObject(clienteDebito.getUrl().get(0), List.class);
+
+
+//        notificaPagamento
     }
 
 }

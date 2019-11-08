@@ -21,6 +21,10 @@ public class Saldo {
         this.saldo_congelado = saldo_congelado;
     }
 
+    public Saldo(){
+
+    }
+
     public Long getId_cliente() {
         return id_cliente;
     }
